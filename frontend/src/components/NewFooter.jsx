@@ -26,7 +26,7 @@ const NewFooter = () => {
             <div className='flex flex-col items-start gap-2'>
             <p className="text-lg md:text-xl text-gray-400">Connect</p>
               <a
-                href="#"
+                href="https://www.linkedin.com/in/ashbhati26/"
                 className='text-sm md:text-lg relative after:content-[""] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full'
               >
                 LinkedIn
