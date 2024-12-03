@@ -76,7 +76,7 @@ const Info = () => {
 
       {/* Image Section */}
       <div
-        className={`relative ${isMobile ? "h-[30vh]" : "h-screen"} w-screen`}
+        className={`relative ${isMobile ? "h-[40vh]" : "h-screen"} w-screen`}
         id="clip"
       >
         {/* Mask Clip Path */}
