@@ -30,7 +30,7 @@ const Cart = () => {
   }, [cartItems, products]);
 
   return (
-    <div className="py-10 mt-[8vw] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="py-10 mt-[15vw] lg:mt-[5vw] min-h-screen px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] transition-opacity ease-in duration-500 opacity-100">
       <div className="text-2xl mb-3">
         <Title text1={"YOUR"} text2={"CART"} />
       </div>
