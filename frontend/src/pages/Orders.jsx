@@ -39,7 +39,7 @@ const Orders = () => {
   }, [token]);
 
   return (
-    <div className="py-10 mt-[8vw] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="py-10 mt-[15vw] lg:mt-[5vw] min-h-screen px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <div className="text-2xl">
         <Title text1={"MY"} text2={"ORDERS"} />
       </div>
