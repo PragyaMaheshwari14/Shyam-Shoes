@@ -24,18 +24,18 @@ const Product = () => {
   }, [productId, products]);
 
   return productData ? (
-    <div className="py-10 mt-[8vw] transition-opacity ease-in duration-500 opacity-100 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="py-10 mt-[10vw] lg:mt-[5vw] transition-opacity ease-in duration-500 opacity-100 px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       {/* product data */}
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         {/* product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="w-[20%] flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7] overflow-hidden">
+          <div className="sm:w-[20%] w-full flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal overflow-hidden">
             {productData.image.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
                 src={item}
                 key={index}
-                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                className="w-[20vw] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer sm:h-auto h-[120px] "
                 alt=""
               />
             ))}
