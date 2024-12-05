@@ -82,15 +82,6 @@ const PlaceOrder = () => {
           } else {
             toast.error(res.data.message);
           }
-        // break;
-
-        // case 'razorpay':
-        //   const responseRazorpay = await axios.post(backendUrl + "/api/order/razorpay", orderData, {headers: {token}})
-        //   if (responseRazorpay.data.success) {
-        //     initPay(responseRazorpay.data.order)
-        //   }
-        // break;
-
         default:
           break;
       }
@@ -103,7 +94,7 @@ const PlaceOrder = () => {
   return (
     <form
       onSubmit={onSubmitHandler}
-      className="flex flex-col sm:flex-row justify-between gap-4 min-h-screen py-10 mt-[8vw] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]"
+      className="flex flex-col sm:flex-row justify-between gap-4 min-h-screen py-10 mt-[15vw] lg:mt-[5vw] px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]"
     >
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl my-3">
@@ -115,7 +106,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="firstName"
             value={formData.firstName}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="text"
             placeholder="First Name"
           />
@@ -124,7 +115,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="lastName"
             value={formData.lastName}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="text"
             placeholder="Last Name"
           />
@@ -134,7 +125,7 @@ const PlaceOrder = () => {
           onChange={onChangeHandler}
           name="email"
           value={formData.email}
-          className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+          className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
           type="email"
           placeholder="Email Address"
         />
@@ -143,7 +134,7 @@ const PlaceOrder = () => {
           onChange={onChangeHandler}
           name="street"
           value={formData.street}
-          className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+          className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
           type="text"
           placeholder="Street"
         />
@@ -153,7 +144,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="city"
             value={formData.city}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="text"
             placeholder="City"
           />
@@ -162,7 +153,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="state"
             value={formData.state}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="text"
             placeholder="State"
           />
@@ -173,7 +164,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="zipcode"
             value={formData.zipcode}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="number"
             placeholder="Zip Code"
           />
@@ -182,7 +173,7 @@ const PlaceOrder = () => {
             onChange={onChangeHandler}
             name="country"
             value={formData.country}
-            className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+            className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
             type="text"
             placeholder="Country"
           />
@@ -192,7 +183,7 @@ const PlaceOrder = () => {
           onChange={onChangeHandler}
           name="phone"
           value={formData.phone}
-          className="border-b text-center border-gray-300 py-1.5 px-3.5 w-full"
+          className="border-b text-center border-gray-300 bg-[#faf9f8] py-1.5 px-3.5 w-full"
           type="number"
           placeholder="Phone"
         />
