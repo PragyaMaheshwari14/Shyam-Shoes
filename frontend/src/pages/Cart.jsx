@@ -2,8 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-
-import bin_icon from "../assets/bin_icon.png"
+import { MdDelete } from "react-icons/md";
 
 const Cart = () => {
   const { products, currency, cartItems, updateQuantity, navigate } =
@@ -94,12 +93,11 @@ const Cart = () => {
                       )
                 }
               />
-              <img
-                src={bin_icon}
-                className="w-4 mr-4 sm:w-5 cursor-pointer"
-                alt="Delete"
-                onClick={() => updateQuantity(item._id, item.size, 0)}
-              />
+              <div 
+              onClick={() => updateQuantity(item._id, item.size, 0)}
+              className="cursor-pointer">
+                <MdDelete className="text-2xl"/>
+              </div>
             </div>
           );
         })}
