@@ -19,11 +19,6 @@ const App = () => {
     const lenis = new Lenis({
       autoRaf: true,
     });
-
-    // Listen for the scroll event and log the event data
-    lenis.on("scroll", (e) => {
-      console.log(e);
-    });
   });
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden bg-[#faf9f8]">
