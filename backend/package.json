@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "backend": "file:",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
@@ -18,10 +19,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.1",
+    "mongoose": "^8.18.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.7",
     "razorpay": "^2.9.5",
+    "svix": "^1.75.0",
     "validator": "^13.12.0"
   }
 }

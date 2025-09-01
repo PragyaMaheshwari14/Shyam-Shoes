@@ -3,6 +3,7 @@ import { assets } from "../assets/assets";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+import { useAuth } from "@clerk/clerk-react";
 
 const Add = ({ token }) => {
   const [image1, setImage1] = useState(false);
@@ -14,8 +15,10 @@ const Add = ({ token }) => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Men");
-  const [subCategory, setSubCategory] = useState("Topwear");
+  const [subCategory, setSubCategory] = useState("Sports Shoes");
   const [sizes, setSizes] = useState([]);
+
+  const { getToken } = useAuth();
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -34,10 +37,13 @@ const Add = ({ token }) => {
       image3 && formData.append("image3", image3);
       image4 && formData.append("image4", image4);
 
+      const token = await getToken();
       const response = await axios.post(
         backendUrl + "/api/product/add",
         formData,
-        { headers: { token } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (response.data.success) {
@@ -49,6 +55,7 @@ const Add = ({ token }) => {
         setImage3(false);
         setImage4(false);
         setPrice("");
+        setSizes([]);
       } else {
         toast.error(response.data.message);
       }
@@ -166,8 +173,11 @@ const Add = ({ token }) => {
             onChange={(e) => setSubCategory(e.target.value)}
             className="w-full px-3 py-2"
           >
-            <option value="Topwear">Topwear</option>
-            <option value="Bottomwear">Bottomwear</option>
+            <option value="Sports Shoes">Sports Shoes</option>
+            <option value="Sneakers">Sneakers</option>
+            <option value="Leather Shoes">Leather Shoes</option>
+            <option value="Slippers">Slippers</option>
+            <option value="Sandals">Sandals</option>
           </select>
         </div>
 
@@ -185,97 +195,31 @@ const Add = ({ token }) => {
 
       <div>
         <p className="mb-2">Product Sizes</p>
-        <div className="flex gap-3">
-          <div
-            onClick={() =>
-              setSizes((p) =>
-                p.includes("S") ? p.filter((item) => item !== "S") : [...p, "S"]
-              )
-            }
-          >
-            <p
-              className={`${
-                sizes.includes("S") ? "bg-pink-100" : "bg-slate-200"
-              } px-3 py-1 cursor-pointer `}
+        <div className="flex gap-3 flex-wrap">
+          {["6UK", "7UK", "8UK", "9UK", "10UK"].map((size) => (
+            <div
+              key={size}
+              onClick={() =>
+                setSizes((prev) =>
+                  prev.includes(size)
+                    ? prev.filter((item) => item !== size)
+                    : [...prev, size]
+                )
+              }
             >
-              S
-            </p>
-          </div>
-
-          <div
-            onClick={() =>
-              setSizes((p) =>
-                p.includes("M") ? p.filter((item) => item !== "M") : [...p, "M"]
-              )
-            }
-          >
-            <p
-              className={`${
-                sizes.includes("M") ? "bg-pink-100" : "bg-slate-200"
-              } px-3 py-1 cursor-pointer `}
-            >
-              M
-            </p>
-          </div>
-
-          <div
-            onClick={() =>
-              setSizes((p) =>
-                p.includes("L") ? p.filter((item) => item !== "L") : [...p, "L"]
-              )
-            }
-          >
-            <p
-              className={`${
-                sizes.includes("L") ? "bg-pink-100" : "bg-slate-200"
-              } px-3 py-1 cursor-pointer `}
-            >
-              L
-            </p>
-          </div>
-
-          <div
-            onClick={() =>
-              setSizes((p) =>
-                p.includes("XL")
-                  ? p.filter((item) => item !== "XL")
-                  : [...p, "XL"]
-              )
-            }
-          >
-            <p
-              className={`${
-                sizes.includes("XL") ? "bg-pink-100" : "bg-slate-200"
-              } px-3 py-1 cursor-pointer `}
-            >
-              XL
-            </p>
-          </div>
-
-          <div
-            onClick={() =>
-              setSizes((p) =>
-                p.includes("XXL")
-                  ? p.filter((item) => item !== "XXL")
-                  : [...p, "XXL"]
-              )
-            }
-          >
-            <p
-              className={`${
-                sizes.includes("XXL") ? "bg-pink-100" : "bg-slate-200"
-              } px-3 py-1 cursor-pointer `}
-            >
-              XXL
-            </p>
-          </div>
+              <p
+                className={`${
+                  sizes.includes(size) ? "bg-pink-100" : "bg-slate-200"
+                } px-3 py-1 cursor-pointer`}
+              >
+                {size}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
-      <button
-        className="w-28 py-3 mt-4 bg-black text-white"
-        type="submit"
-      >
+      <button className="w-28 py-3 mt-4 bg-black text-white" type="submit">
         Add
       </button>
     </form>

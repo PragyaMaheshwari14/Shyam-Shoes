@@ -1,14 +1,14 @@
 import express from "express";
-import {
-  adminLogin,
-  loginUser,
-  registerUser,
-} from "../controllers/userController.js";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import { syncUser, getAllUsers } from "../controllers/userController.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/register", registerUser);
-userRouter.post("/login", loginUser);
-userRouter.post("/admin", adminLogin);
+// Clerk → Mongo sync (customers)
+userRouter.get("/profile", ClerkExpressRequireAuth(), syncUser);
+
+// Admin: get all users
+userRouter.get("/all", ...adminAuth, getAllUsers);
 
 export default userRouter;

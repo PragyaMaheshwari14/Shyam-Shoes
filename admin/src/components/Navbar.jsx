@@ -1,13 +1,15 @@
-import React from 'react'
-import {assets} from "../assets/assets"
+import React from "react";
+import { UserButton } from "@clerk/clerk-react";
 
-const Navbar = ({setToken}) => {
+const Navbar = () => {
   return (
-    <div className='flex items-center bg-[#111111] justify-between py-1 px-[4%] rounded-full m-4 drop-shadow-md'>
-        <img className='w-[10vw]' src={assets.logo} alt="" />
-        <button onClick={()=> setToken('')} className='bg-sky-50 text-[#111111] font-lg px-5 py-2 sm:px-7 sm:py-2 rounded-full text-sm'>Logout</button>
-    </div>
-  )
-}
+    <div className="w-full flex items-center justify-between px-6 py-4 bg-white shadow">
+      <h1 className="text-xl font-bold">Admin Panel</h1>
 
-export default Navbar
+      {/* Clerk User Avatar + Dropdown (includes Logout option) */}
+      <UserButton afterSignOutUrl="/" />
+    </div>
+  );
+};
+
+export default Navbar;

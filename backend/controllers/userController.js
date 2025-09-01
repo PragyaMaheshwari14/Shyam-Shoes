@@ -1,98 +1,39 @@
-import validator from "validator";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-
 import userModel from "../models/userModel.js";
+import { users } from "@clerk/clerk-sdk-node";
 
-const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET);
-};
-//Route for user login
-export const loginUser = async (req, res) => {
+// ✅ Sync Clerk → MongoDB when frontend calls /profile
+export const syncUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    const user = await userModel.findOne({ email });
-    if (!user) {
-      return res.json({ success: false, message: "User does not exists" });
+    const clerkUserId = req.auth.userId;
+    if (!clerkUserId) {
+      return res.status(401).json({ success: false, message: "Unauthenticated" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const clerkUser = await users.getUser(clerkUserId);
 
-    if (isMatch) {
-      const token = createToken(user._id);
-      res.json({ success: true, token });
-    } else {
-      return res.json({ success: false, message: "Invalid Credentials" });
-    }
-  } catch (e) {
-    console.log(e);
-    res.json({ success: false, message: e.message });
+    const email = clerkUser.emailAddresses[0]?.emailAddress;
+    const name = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
+    const imageUrl = clerkUser.imageUrl;
+
+    const user = await userModel.findOneAndUpdate(
+      { clerkId: clerkUserId },
+      { email, name, imageUrl },
+      { new: true, upsert: true }
+    );
+
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error("SyncUser Error:", err.message);
+    res.status(500).json({ success: false, message: "Failed to sync user" });
   }
 };
 
-//Route for user register
-export const registerUser = async (req, res) => {
+// ✅ Admin: get all users
+export const getAllUsers = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    // checking user already exist or not
-    const exists = await userModel.findOne({ email });
-    if (exists) {
-      return res.json({ success: false, message: "User already exists" });
-    }
-
-    //validating email formate and strong password
-    if (!validator.isEmail(email)) {
-      return res.json({
-        success: false,
-        message: "Please enter a valid email",
-      });
-    }
-
-    if (password.length < 8) {
-      return res.json({
-        success: false,
-        message: "Please enter a strong password",
-      });
-    }
-
-    //hashing user password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new userModel({ name, email, password: hashedPassword });
-
-    const user = await newUser.save();
-
-    const token = createToken(user._id);
-
-    res.json({ success: true, token });
-  } catch (e) {
-    console.log(e);
-    res.json({ success: false, message: e.message });
-  }
-};
-
-//Route for Admin login
-export const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign(email + password, process.env.JWT_SECRET);
-      res.json({ success: true, token });
-    } else {
-      res.json({
-        success: false,
-        message: "Invalid Credentials",
-      });
-    }
-  } catch (e) {
-    console.log(e);
-    res.json({ success: false, message: e.message });
+    const usersList = await userModel.find();
+    res.json({ success: true, users: usersList });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to fetch users" });
   }
 };

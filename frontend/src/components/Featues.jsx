@@ -41,11 +41,9 @@ export const BentoTilt = ({ children, className = "" }) => {
 export const BentoCard = ({ src, title, description }) => {
   return (
     <div className="relative size-full">
-      <video
+      <img
         src={src}
-        loop
-        muted
-        autoPlay
+        alt={title}
         className="absolute left-0 top-0 size-full object-cover object-center"
       />
 
@@ -70,15 +68,15 @@ const Features = () => {
             Urban Style Redefined
           </p>
           <p className="max-w-md text-[3vw] mt-[2vw] text-blue-50 opacity-50 md:text-lg">
-            Step into the world of modern fashion with Urban Store. From
-            trendsetting designs to timeless classics, we bring you the perfect
-            blend of style, comfort, and quality.
+            Step into a world where craftsmanship meets fashion. <br /> At Shyam Shoes,
+            every pair blends timeless design, superior comfort, and unmatched
+            quality — crafted for those who walk with confidence.
           </p>
         </div>
 
         <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
           <BentoCard
-            src="videos/feature-1.mp4"
+            src="img/feature-1.jpg"
             title={<>inspire</>}
             description="Explore fashion that inspires confidence and creativity, blending urban trends with timeless elegance for every occasion."
           />
@@ -88,7 +86,7 @@ const Features = () => {
           {/* BentoCard 1 */}
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
             <BentoCard
-              src="videos/feature-2.mp4"
+              src="img/feature-2.jpg"
               title={<>discover</>}
               description="Uncover the latest styles curated to fit your lifestyle, offering quality and comfort in every piece."
               isComingSoon
@@ -98,7 +96,7 @@ const Features = () => {
           {/* BentoCard 2 */}
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-1">
             <BentoCard
-              src="videos/feature-3.mp4"
+              src="img/feature-3.jpg"
               title={<>elevate</>}
               description="Redefine your wardrobe with chic designs crafted to enhance your personal style."
               isComingSoon
@@ -108,7 +106,7 @@ const Features = () => {
           {/* BentoCard 3 */}
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-1">
             <BentoCard
-              src="videos/feature-4.mp4"
+              src="img/feature-4.jpg"
               title={<>empower</>}
               description="Feel empowered in clothing designed to celebrate diversity, embrace comfort."
               isComingSoon

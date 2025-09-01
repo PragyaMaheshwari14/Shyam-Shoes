@@ -8,7 +8,7 @@ const LatestCollection = () => {
   const [latestProducts, setLatestProducts] = useState([]);
 
   useEffect(() => {
-    setLatestProducts(products.slice(0, 4)); // Limit to 4 products
+    setLatestProducts(products.slice(0, 4));
   }, [products]);
 
   return (
@@ -16,7 +16,7 @@ const LatestCollection = () => {
       <div className="text-center py-4 text-3xl">
         <Title text1={"LATEST"} text2={"COLLECTIONS"} />
         <p className="w-full sm:w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-500">
-        Discover our latest collection featuring trendy, comfortable, and high-quality pieces designed to elevate your everyday style.
+        Explore our latest collection — shoes that are stylish, comfortable, and built for everyday wear.
         </p>
       </div>
       {/* rendering 4 products in a single row */}

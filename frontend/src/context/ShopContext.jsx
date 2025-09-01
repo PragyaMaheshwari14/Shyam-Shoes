@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
 
 export const ShopContext = createContext();
 
@@ -9,13 +10,20 @@ const ShopContextProvider = (props) => {
   const currency = "₹";
   const delivery_fee = 10;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(true);
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
-  const [token, setToken] = useState("");
 
   const navigate = useNavigate();
+  const { isSignedIn, getToken } = useAuth();
+
+  // ✅ Get JWT from Clerk
+  const authHeaders = async () => {
+    const token = await getToken();
+    return { Authorization: `Bearer ${token}` };
+  };
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -33,18 +41,17 @@ const ShopContextProvider = (props) => {
       }
     } else {
       cartData[itemId] = {};
-
       cartData[itemId][size] = 1;
     }
 
     setCartItems(cartData);
 
-    if (token) {
+    if (isSignedIn) {
       try {
         await axios.post(
           backendUrl + "/api/cart/add",
           { itemId, size },
-          { headers: { token } }
+          { headers: await authHeaders() }
         );
       } catch (e) {
         console.log(e);
@@ -61,26 +68,23 @@ const ShopContextProvider = (props) => {
           if (cartItems[items][item] > 0) {
             totalCount += cartItems[items][item];
           }
-        } catch (e) {}
+        } catch {}
       }
     }
-
     return totalCount;
   };
 
   const updateQuantity = async (itemId, size, quantity) => {
     let cartData = structuredClone(cartItems);
-
     cartData[itemId][size] = quantity;
-
     setCartItems(cartData);
 
-    if (token) {
+    if (isSignedIn) {
       try {
         await axios.post(
           backendUrl + "/api/cart/update",
           { itemId, size, quantity },
-          { headers: { token } }
+          { headers: await authHeaders() }
         );
       } catch (e) {
         console.log(e);
@@ -93,23 +97,20 @@ const ShopContextProvider = (props) => {
     let totalAmount = 0;
     for (const items in cartItems) {
       let itemInfo = products.find((product) => product._id === items);
-
       for (const item in cartItems[items]) {
         try {
           if (cartItems[items][item] > 0) {
             totalAmount += itemInfo.price * cartItems[items][item];
           }
-        } catch (e) {}
+        } catch {}
       }
     }
-
     return totalAmount;
   };
 
   const getProductsData = async () => {
     try {
       const response = await axios.get(backendUrl + "/api/product/list");
-
       if (response.data.success) {
         setProducts(response.data.products);
       } else {
@@ -121,14 +122,14 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  const getUserCart = async (token) => {
+  const getUserCart = async () => {
+    if (!isSignedIn) return;
     try {
       const res = await axios.post(
         backendUrl + "/api/cart/get",
         {},
-        { headers: { token } }
+        { headers: await authHeaders() }
       );
-
       if (res.data.success) {
         setCartItems(res.data.cartData);
       }
@@ -138,16 +139,19 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  // Load products
   useEffect(() => {
     getProductsData();
   }, []);
 
+  // Sync cart when user signs in
   useEffect(() => {
-    if (!token && localStorage.getItem("token")) {
-      setToken(localStorage.getItem("token"));
-      getUserCart(localStorage.getItem("token"));
+    if (isSignedIn) {
+      getUserCart();
+    } else {
+      setCartItems({});
     }
-  }, []);
+  }, [isSignedIn]);
 
   const value = {
     products,
@@ -164,8 +168,6 @@ const ShopContextProvider = (props) => {
     getCartAmount,
     navigate,
     backendUrl,
-    token,
-    setToken,
     setCartItems,
   };
 

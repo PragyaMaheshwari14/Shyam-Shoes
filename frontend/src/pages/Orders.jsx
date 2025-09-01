@@ -1,29 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
+import { useContext } from "react";
 
 const Orders = () => {
-  const { backendUrl, token, currency } = useContext(ShopContext);
+  const { backendUrl, currency } = useContext(ShopContext);
+  const { getToken, isSignedIn } = useAuth();
 
   const [orderData, setOrderData] = useState([]);
 
   const loadOrderData = async () => {
     try {
-      if (!token) {
-        return null;
-      }
+      if (!isSignedIn) return;
+
+      const token = await getToken();
+
       const response = await axios.post(
         backendUrl + "/api/order/userorders",
         {},
-        { headers: { token } }
+        { headers: { Authorization: `Bearer ${token}` } } // ✅ Clerk JWT
       );
+
       if (response.data.success) {
         let allOrdersItem = [];
-        response.data.orders.map((order) => {
-          order.items.map((item) => {
+        response.data.orders.forEach((order) => {
+          order.items.forEach((item) => {
             item["status"] = order.status;
-            item["payment"] = order.payment;
             item["paymentMethod"] = order.paymentMethod;
             item["date"] = order.date;
             allOrdersItem.push(item);
@@ -31,12 +35,14 @@ const Orders = () => {
         });
         setOrderData(allOrdersItem.reverse());
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Load Orders Error:", error.response?.data || error.message);
+    }
   };
 
   useEffect(() => {
     loadOrderData();
-  }, [token]);
+  }, [isSignedIn]);
 
   return (
     <div className="py-10 mt-[15vw] lg:mt-[5vw] min-h-screen px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">

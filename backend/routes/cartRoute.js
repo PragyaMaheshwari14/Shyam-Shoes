@@ -4,12 +4,13 @@ import {
   getUserCart,
   updateCart,
 } from "../controllers/cartController.js";
-import authUser from "../middleware/auth.js";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const cartRouter = express.Router();
 
-cartRouter.post("/get", authUser, getUserCart);
-cartRouter.post("/add", authUser, addToCart);
-cartRouter.post("/update", authUser, updateCart);
+// ✅ All cart routes require login
+cartRouter.post("/get", ClerkExpressRequireAuth(), getUserCart);
+cartRouter.post("/add", ClerkExpressRequireAuth(), addToCart);
+cartRouter.post("/update", ClerkExpressRequireAuth(), updateCart);
 
 export default cartRouter;

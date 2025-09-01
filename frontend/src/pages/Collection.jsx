@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
@@ -131,18 +131,45 @@ const Collection = () => {
                   className="w-3"
                   type="checkbox"
                   onChange={toggleSubCategory}
-                  value={"Topwear"}
+                  value={"Sports Shoes"}
                 />
-                Topwear
+                Sports Shoes
               </p>
               <p className="flex gap-2">
                 <input
                   className="w-3"
                   type="checkbox"
                   onChange={toggleSubCategory}
-                  value={"Bottomwear"}
+                  value={"Sneakers"}
                 />
-                Bottomwear
+                Sneakers
+              </p>
+              <p className="flex gap-2">
+                <input
+                  className="w-3"
+                  type="checkbox"
+                  onChange={toggleSubCategory}
+                  value={"Leather Shoes"}
+                />
+                Leather Shoes
+              </p>
+              <p className="flex gap-2">
+                <input
+                  className="w-3"
+                  type="checkbox"
+                  onChange={toggleSubCategory}
+                  value={"Slippers"}
+                />
+                Slippers
+              </p>
+              <p className="flex gap-2">
+                <input
+                  className="w-3"
+                  type="checkbox"
+                  onChange={toggleSubCategory}
+                  value={"Sandals"}
+                />
+                Sandals
               </p>
             </div>
           </div>

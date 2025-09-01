@@ -62,14 +62,13 @@ const Info = () => {
 
         {/* Title */}
         <div className="lg:mt-5 text-center text-[6vw] text-[#111111] uppercase font-krona tracking-tight leading-[1]">
-          Redefining Urban <br /> Fashion for Modern Living
+          Redefining footwear <br /> elegance for modern living.
         </div>
 
         {/* Description */}
         <div className="flex flex-col text-center">
           <p className="text-gray-500 font-general text-sm uppercase lg:text-[1.5vw]">
-            At Urban Store, we bring you high-quality fashion that makes a
-            statement every time.
+            At Shyam Shoes, we craft high-quality shoes that make a statement with every step.
           </p>
         </div>
       </div>

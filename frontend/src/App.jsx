@@ -15,11 +15,15 @@ import Lenis from "lenis";
 
 const App = () => {
   useEffect(() => {
-    // Initialize Lenis
     const lenis = new Lenis({
-      autoRaf: true,
+      smooth: true,
+      autoRaf: true, // ✅ no need to manually call raf
     });
-  });
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
   return (
     <div className="relative min-h-screen w-screen overflow-x-hidden bg-[#faf9f8]">
       <ToastContainer />

@@ -2,25 +2,14 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    cartData: {
-      type: Object,
-      default: {},
-    },
+    clerkId: { type: String, required: true, unique: true },
+    name: String,
+    email: { type: String, required: true, unique: true },
+    imageUrl: String,
+    role: { type: String, enum: ["customer", "admin"], default: "customer" },
+    cartData: { type: Object, default: {} },
   },
-  { minimize: false }
+  { timestamps: true }
 );
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);

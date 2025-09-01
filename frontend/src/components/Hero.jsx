@@ -107,16 +107,12 @@ const Hero = () => {
         />
       </div>
 
-      <h1 className="absolute bottom-5 right-5 z-40 text-[#caf0f8] text-4xl lg:text-8xl tracking-tight font-bold font-krona">
-        STYLE
-      </h1>
-
       <div className="absolute left-0 top-0 z-40 px-5 mt-24 lg:px-10 lg:mt-[6vw]">
           <h1 className="text-blue-100 text-[8vw] tracking-tight font-bold font-krona">
-            TRENDSETTERS
+            SHYAM SHOES
           </h1>
           <p className="mb-5 text-blue-100 font-krona">
-            Discover premium fashion <br /> and lifestyle effortlessly.
+            Footwear designed for everyday elegance — <br /> because less is always more.
           </p>
       </div>
     </div>

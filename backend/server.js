@@ -8,17 +8,17 @@ import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
-// App config
 const app = express();
 const port = process.env.PORT || 4000;
+
 connectDB();
 connectCloudinary();
 
-// middlewares
+// Middlewares
 app.use(express.json());
 app.use(cors());
 
-// api endpoints
+// Routes
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
@@ -28,4 +28,13 @@ app.get("/", (req, res) => {
   res.send("API Working");
 });
 
-app.listen(port, () => console.log("Server started on Port : " + port));
+// ✅ Prevent server crash on Clerk auth errors
+app.use((err, req, res, next) => {
+  if (err.message === "Unauthenticated") {
+    return res.status(401).json({ success: false, message: "Unauthenticated" });
+  }
+  console.error("Unhandled error:", err);
+  res.status(500).json({ success: false, message: "Server error" });
+});
+
+app.listen(port, () => console.log("✅ Server started on Port:", port));

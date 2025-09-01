@@ -10,9 +10,10 @@ import adminAuth from "../middleware/adminAuth.js";
 
 const productRouter = express.Router();
 
+// 🔐 Admin routes (only Clerk admins)
 productRouter.post(
   "/add",
-  adminAuth,
+  ...adminAuth,
   upload.fields([
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
@@ -21,8 +22,11 @@ productRouter.post(
   ]),
   addProduct
 );
+
+productRouter.post("/remove", ...adminAuth, removeProduct);
+
+// 🌍 Public routes
 productRouter.post("/single", singleProduct);
-productRouter.post("/remove", adminAuth, removeProduct);
 productRouter.get("/list", listProduct);
 
 export default productRouter;

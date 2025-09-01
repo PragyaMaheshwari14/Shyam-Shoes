@@ -6,18 +6,16 @@ import {
   userOrders,
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
-import authUser from "../middleware/auth.js";
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const orderRouter = express.Router();
 
-//ADMIN FEATURE
-orderRouter.post("/list", adminAuth, allOrders);
-orderRouter.post("/status", adminAuth, updateStatus);
+// 🔐 Admin routes
+orderRouter.post("/list", ...adminAuth, allOrders);
+orderRouter.post("/status", ...adminAuth, updateStatus);
 
-//PAYMENT FEATURE
-orderRouter.post("/place", authUser, placeOrder);
-
-//USER FEATURE
-orderRouter.post("/userorders", authUser, userOrders);
+// 👤 User routes
+orderRouter.post("/place", ClerkExpressRequireAuth(), placeOrder);
+orderRouter.post("/userorders", ClerkExpressRequireAuth(), userOrders);
 
 export default orderRouter;

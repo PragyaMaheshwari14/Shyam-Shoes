@@ -1,30 +1,30 @@
-import jwt from "jsonwebtoken";
+import { ClerkExpressRequireAuth, users } from "@clerk/clerk-sdk-node";
 
-const adminAuth = async (req, res, next) => {
-  try {
-    const { token } = req.headers;
+const adminAuth = [
+  ClerkExpressRequireAuth(),
+  async (req, res, next) => {
+    try {
+      const clerkUser = await users.getUser(req.auth.userId);
 
-    if (!token) {
-      return res.json({
-        success: false,
-        message: "Not Authorized! Login again.",
-      });
+      if (!clerkUser || clerkUser.publicMetadata.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "Admins only! Access denied.",
+        });
+      }
+
+      // ✅ Attach admin info for logging/debugging
+      req.admin = {
+        id: clerkUser.id,
+        email: clerkUser.emailAddresses[0]?.emailAddress,
+      };
+
+      next();
+    } catch (err) {
+      console.error("AdminAuth Error:", err.message);
+      res.status(401).json({ success: false, message: "Unauthorized" });
     }
-
-    const token_decode = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
-      return res.json({
-        success: false,
-        message: "Not Authorized! Login again.",
-      });
-    }
-
-    next();
-  } catch (e) {
-    console.log(e);
-    res.json({ success: false, message: e.message });
-  }
-};
+  },
+];
 
 export default adminAuth;
