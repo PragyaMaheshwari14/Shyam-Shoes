@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { assets } from "../assets/assets";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
+import { FaPlus, FaTrash } from "react-icons/fa";
 
-const Add = ({ token }) => {
+const Add = () => {
   const [image1, setImage1] = useState(false);
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
@@ -65,73 +65,53 @@ const Add = ({ token }) => {
     }
   };
 
+  const renderUploadBox = (image, setImage, id) => (
+    <label htmlFor={id} className="cursor-pointer">
+      {!image ? (
+        <div className="w-20 h-20 flex items-center justify-center border rounded bg-gray-100 hover:bg-gray-200">
+          <FaPlus className="text-gray-500 text-xl" />
+        </div>
+      ) : (
+        <div className="relative w-20 h-20">
+          <img
+            src={URL.createObjectURL(image)}
+            className="w-20 h-20 object-cover rounded"
+            alt="preview"
+          />
+          <button
+            type="button"
+            className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full"
+            onClick={() => setImage(false)}
+          >
+            <FaTrash size={12} />
+          </button>
+        </div>
+      )}
+      <input
+        onChange={(e) => setImage(e.target.files[0])}
+        type="file"
+        id={id}
+        hidden
+      />
+    </label>
+  );
+
   return (
     <form
       onSubmit={onSubmitHandler}
       className="flex flex-col w-full items-start gap-3"
     >
       <div>
-        <p className="mb-2 ">Upload Image</p>
+        <p className="mb-2">Upload Image</p>
         <div className="flex gap-2">
-          <label htmlFor="image1">
-            <img
-              src={!image1 ? assets.upload_area : URL.createObjectURL(image1)}
-              className="w-20"
-              alt=""
-            />
-            <input
-              onChange={(e) => setImage1(e.target.files[0])}
-              type="file"
-              id="image1"
-              hidden
-            />
-          </label>
-
-          <label htmlFor="image2">
-            <img
-              src={!image2 ? assets.upload_area : URL.createObjectURL(image2)}
-              className="w-20"
-              alt=""
-            />
-            <input
-              onChange={(e) => setImage2(e.target.files[0])}
-              type="file"
-              id="image2"
-              hidden
-            />
-          </label>
-
-          <label htmlFor="image3">
-            <img
-              src={!image3 ? assets.upload_area : URL.createObjectURL(image3)}
-              className="w-20"
-              alt=""
-            />
-            <input
-              onChange={(e) => setImage3(e.target.files[0])}
-              type="file"
-              id="image3"
-              hidden
-            />
-          </label>
-
-          <label htmlFor="image4">
-            <img
-              src={!image4 ? assets.upload_area : URL.createObjectURL(image4)}
-              className="w-20"
-              alt=""
-            />
-            <input
-              onChange={(e) => setImage4(e.target.files[0])}
-              type="file"
-              id="image4"
-              hidden
-            />
-          </label>
+          {renderUploadBox(image1, setImage1, "image1")}
+          {renderUploadBox(image2, setImage2, "image2")}
+          {renderUploadBox(image3, setImage3, "image3")}
+          {renderUploadBox(image4, setImage4, "image4")}
         </div>
       </div>
 
-      <div className="w-full ">
+      <div className="w-full">
         <p className="mb-2">Product name</p>
         <input
           className="w-full max-w-[500px] px-3 py-2"
@@ -143,7 +123,7 @@ const Add = ({ token }) => {
         />
       </div>
 
-      <div className="w-full ">
+      <div className="w-full">
         <p className="mb-2">Product description</p>
         <textarea
           className="w-full max-w-[500px] px-3 py-2"
@@ -161,6 +141,7 @@ const Add = ({ token }) => {
           <select
             onChange={(e) => setCategory(e.target.value)}
             className="w-full px-3 py-2"
+            value={category}
           >
             <option value="Men">Men</option>
             <option value="Women">Women</option>
@@ -172,6 +153,7 @@ const Add = ({ token }) => {
           <select
             onChange={(e) => setSubCategory(e.target.value)}
             className="w-full px-3 py-2"
+            value={subCategory}
           >
             <option value="Sports Shoes">Sports Shoes</option>
             <option value="Sneakers">Sneakers</option>
@@ -196,7 +178,7 @@ const Add = ({ token }) => {
       <div>
         <p className="mb-2">Product Sizes</p>
         <div className="flex gap-3 flex-wrap">
-          {["6UK", "7UK", "8UK", "9UK", "10UK"].map((size) => (
+          {["4UK", "5UK", "6UK", "7UK", "8UK", "9UK", "10UK"].map((size) => (
             <div
               key={size}
               onClick={() =>

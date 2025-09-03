@@ -58,7 +58,7 @@ const Cart = () => {
             >
               <div className="flex items-start gap-6">
                 <img
-                  src={productsData.image?.[0] || assets.default_image} // Fallback image
+                  src={productsData.image?.[0] || "/fallback.png"} // ✅ safer fallback
                   className="w-16 sm:w-20"
                   alt={productsData.name || "Product"}
                 />
@@ -71,7 +71,7 @@ const Cart = () => {
                       {currency}
                       {productsData.price}
                     </p>
-                    <p className="px-2 sm:px-3 sm:py-1 border bg-stale-50">
+                    <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50">
                       {item.size}
                     </p>
                   </div>
@@ -93,10 +93,11 @@ const Cart = () => {
                       )
                 }
               />
-              <div 
-              onClick={() => updateQuantity(item._id, item.size, 0)}
-              className="cursor-pointer">
-                <MdDelete className="text-2xl"/>
+              <div
+                onClick={() => updateQuantity(item._id, item.size, 0)}
+                className="cursor-pointer"
+              >
+                <MdDelete className="text-2xl" />
               </div>
             </div>
           );
@@ -106,12 +107,20 @@ const Cart = () => {
       <div className="flex justify-end my-20">
         <div className="w-full sm:w-[450px]">
           <CartTotal />
-          <div className="w-full text-end">
+          <div className="w-full text-end flex flex-col gap-3">
+            {/* ✅ Checkout button */}
             <button
-              className="bg-[#111111] text-sky-50 text-sm my-8 px-8 py-3"
+              className="bg-[#111111] text-sky-50 text-sm px-8 py-3"
               onClick={() => navigate("/place-order")}
             >
               PROCEED TO CHECKOUT
+            </button>
+
+            <button
+              className="bg-gray-200 text-black text-sm px-8 py-3 border rounded-md hover:bg-gray-300"
+              onClick={() => navigate("/orders")}
+            >
+              VIEW MY ORDERS
             </button>
           </div>
         </div>

@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
-// Register the GSAP ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
 const Info = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  // Handle resizing to determine if the view is mobile
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);

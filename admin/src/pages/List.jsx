@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { backendUrl, currency } from "../App";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -6,6 +6,7 @@ import { useAuth } from "@clerk/clerk-react";
 
 const List = () => {
   const [list, setList] = useState([]);
+  const [search, setSearch] = useState("");
   const { getToken } = useAuth();
 
   const fetchList = async () => {
@@ -46,9 +47,25 @@ const List = () => {
     fetchList();
   }, []);
 
+  const filteredList = list.filter((item) =>
+    `${item.name} ${item.category} ${item.price}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
   return (
     <>
-      <p className="mb-2">All Products List</p>
+      <div className="flex justify-between items-center mb-4">
+        <p className="font-semibold">All Products List</p>
+        <input
+          type="text"
+          placeholder="Search products..."
+          className="border px-3 py-1 rounded w-60"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
       <div className="flex flex-col gap-2">
         <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm">
           <b>Image</b>
@@ -57,25 +74,35 @@ const List = () => {
           <b>Price</b>
           <b className="text-center">Action</b>
         </div>
-        {list.map((item, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm"
-          >
-            <img className="w-12" src={item.image[0]} alt="" />
-            <p>{item.name}</p>
-            <p>{item.category}</p>
-            <p>
-              {currency} {item.price}
-            </p>
-            <p
-              onClick={() => removeProduct(item._id)}
-              className="text-right md:text-center cursor-pointer text-lg"
+        {filteredList.length > 0 ? (
+          filteredList.map((item, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm"
             >
-              X
-            </p>
-          </div>
-        ))}
+              <img
+                className="w-12 h-12 object-cover rounded"
+                src={
+                  item.colors?.[0]?.images?.[0] || item.image?.[0] || "/fallback.png"
+                }
+                alt={item.name}
+              />
+              <p>{item.name}</p>
+              <p>{item.category}</p>
+              <p>
+                {currency} {item.price}
+              </p>
+              <p
+                onClick={() => removeProduct(item._id)}
+                className="text-right md:text-center cursor-pointer text-lg text-red-600"
+              >
+                ✕
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 py-4">No products found.</p>
+        )}
       </div>
     </>
   );

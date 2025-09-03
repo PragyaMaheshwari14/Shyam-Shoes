@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { backendUrl, currency } from "../App";
-import { assets } from "../assets/assets";
 import { useAuth } from "@clerk/clerk-react";
+import { FaBox } from "react-icons/fa";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -18,7 +18,10 @@ const Orders = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (res.data.success) {
-        setOrders(res.data.orders.reverse());
+        const sortedOrders = [...res.data.orders].sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setOrders(sortedOrders);
       } else {
         toast.error(res.data.message);
       }
@@ -29,22 +32,30 @@ const Orders = () => {
   };
 
   const statusHandler = async (e, orderId) => {
-    try {
-      const token = await getToken();
-      const res = await axios.post(
-        backendUrl + "/api/order/status",
-        { orderId, status: e.target.value },
-        { headers: { Authorization: `Bearer ${token}` } }
+  const newStatus = e.target.value;
+  try {
+    const token = await getToken();
+    const res = await axios.post(
+      backendUrl + "/api/order/status",
+      { orderId, status: newStatus },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (res.data.success) {
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
       );
-      if (res.data.success) {
-        await fetchAllOrders();
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+
+      toast.success(res.data.message);
     }
-  };
+  } catch (error) {
+    console.log(error);
+    toast.error(error.message);
+  }
+};
+
 
   useEffect(() => {
     fetchAllOrders();
@@ -59,7 +70,21 @@ const Orders = () => {
             key={i}
             className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
           >
-            <img src={assets.parcel_icon} className="w-12" alt="" />
+            {/* Product image or fallback icon */}
+            {order.items[0]?.image ? (
+              <img
+                src={
+                  Array.isArray(order.items[0].image)
+                    ? order.items[0].image[0]
+                    : order.items[0].image
+                }
+                alt={order.items[0].name}
+                className="w-12 h-12 object-cover rounded"
+              />
+            ) : (
+              <FaBox className="w-12 h-12 text-gray-500" />
+            )}
+
             <div>
               <div>
                 {order.items.map((item, i) => (

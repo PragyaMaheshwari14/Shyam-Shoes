@@ -1,4 +1,3 @@
-import React from 'react'
 import Eyes from './Eyes'
 
 const Footer = () => {
