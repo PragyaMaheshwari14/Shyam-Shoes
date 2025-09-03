@@ -3,11 +3,14 @@ import { backendUrl, currency } from "../App";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import { CiEdit } from "react-icons/ci";
 
 const List = () => {
   const [list, setList] = useState([]);
   const [search, setSearch] = useState("");
   const { getToken } = useAuth();
+  const navigate = useNavigate();
 
   const fetchList = async () => {
     try {
@@ -83,7 +86,9 @@ const List = () => {
               <img
                 className="w-12 h-12 object-cover rounded"
                 src={
-                  item.colors?.[0]?.images?.[0] || item.image?.[0] || "/fallback.png"
+                  item.colors?.[0]?.images?.[0] ||
+                  item.image?.[0] ||
+                  "/fallback.png"
                 }
                 alt={item.name}
               />
@@ -92,12 +97,20 @@ const List = () => {
               <p>
                 {currency} {item.price}
               </p>
-              <p
-                onClick={() => removeProduct(item._id)}
-                className="text-right md:text-center cursor-pointer text-lg text-red-600"
-              >
-                ✕
-              </p>
+              <div className="flex justify-evenly items-center">
+                <p
+                  onClick={() => removeProduct(item._id)}
+                  className="text-right md:text-center cursor-pointer text-lg text-red-600"
+                >
+                  ✕
+                </p>
+                <p
+                  onClick={() => navigate(`/edit/${item._id}`)}
+                  className="text-right md:text-center cursor-pointer text-xl text-blue-600"
+                >
+                  <CiEdit />
+                </p>
+              </div>
             </div>
           ))
         ) : (

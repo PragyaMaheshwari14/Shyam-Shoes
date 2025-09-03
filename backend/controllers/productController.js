@@ -42,10 +42,7 @@ export const addProduct = async (req, res) => {
       date: Date.now(),
     };
 
-    console.log(productData);
-
     const product = new productModel(productData);
-
     await product.save();
 
     res.json({ success: true, message: "Product Added" });
@@ -86,6 +83,60 @@ export const singleProduct = async (req, res) => {
     res.json({ success: true, product });
   } catch (e) {
     console.log(e);
+    res.json({ success: false, message: e.message });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    const { id, name, description, price, category, subCategory, sizes } =
+      req.body;
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res.json({ success: false, message: "Product not found" });
+    }
+
+    // ✅ Start with old images
+    let imagesUrl = [...product.image];
+
+    // ✅ Check for uploaded files safely
+    const uploadedFiles = [];
+    if (req.files) {
+      const image1 = req.files.image1?.[0];
+      const image2 = req.files.image2?.[0];
+      const image3 = req.files.image3?.[0];
+      const image4 = req.files.image4?.[0];
+
+      [image1, image2, image3, image4].forEach((img, index) => {
+        if (img) uploadedFiles.push({ file: img, index });
+      });
+    }
+
+    // ✅ If new images uploaded, replace only those slots
+    if (uploadedFiles.length > 0) {
+      for (const { file, index } of uploadedFiles) {
+        const result = await cloudinary.uploader.upload(file.path, {
+          resource_type: "image",
+        });
+        imagesUrl[index] = result.secure_url; // replace only this index
+      }
+    }
+
+    // ✅ Update product fields
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price ? Number(price) : product.price;
+    product.category = category || product.category;
+    product.subCategory = subCategory || product.subCategory;
+    product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
+    product.image = imagesUrl;
+
+    await product.save();
+
+    res.json({ success: true, message: "Product Updated", product });
+  } catch (e) {
+    console.error("updateProduct error:", e);
     res.json({ success: false, message: e.message });
   }
 };

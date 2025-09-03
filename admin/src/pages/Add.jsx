@@ -4,6 +4,8 @@ import { backendUrl } from "../App";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const Add = () => {
   const [image1, setImage1] = useState(false);
@@ -19,6 +21,36 @@ const Add = () => {
   const [sizes, setSizes] = useState([]);
 
   const { getToken } = useAuth();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) return;
+      try {
+        const res = await axios.post(backendUrl + "/api/product/single", {
+          productId: id,
+        });
+        if (res.data.success) {
+          const product = res.data.product;
+          setName(product.name);
+          setDescription(product.description);
+          setPrice(product.price);
+          setCategory(product.category);
+          setSubCategory(product.subCategory);
+          setSizes(product.sizes);
+
+          setImage1(product.image[0] || false);
+          setImage2(product.image[1] || false);
+          setImage3(product.image[2] || false);
+          setImage4(product.image[3] || false);
+        }
+      } catch (err) {
+        toast.error("Failed to load product");
+      }
+    };
+    fetchProduct();
+  }, [id]);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -31,6 +63,7 @@ const Add = () => {
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("sizes", JSON.stringify(sizes));
+      if (id) formData.append("id", id);
 
       image1 && formData.append("image1", image1);
       image2 && formData.append("image2", image2);
@@ -38,24 +71,17 @@ const Add = () => {
       image4 && formData.append("image4", image4);
 
       const token = await getToken();
-      const response = await axios.post(
-        backendUrl + "/api/product/add",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const url = id
+        ? backendUrl + "/api/product/update"
+        : backendUrl + "/api/product/add";
+
+      const response = await axios.post(url, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (response.data.success) {
         toast.success(response.data.message);
-        setName("");
-        setDescription("");
-        setImage1(false);
-        setImage2(false);
-        setImage3(false);
-        setImage4(false);
-        setPrice("");
-        setSizes([]);
+        navigate("/list"); // go back to list page
       } else {
         toast.error(response.data.message);
       }
@@ -74,7 +100,11 @@ const Add = () => {
       ) : (
         <div className="relative w-20 h-20">
           <img
-            src={URL.createObjectURL(image)}
+            src={
+              typeof image === "string"
+                ? image // existing image URL
+                : URL.createObjectURL(image) // new uploaded file
+            }
             className="w-20 h-20 object-cover rounded"
             alt="preview"
           />
@@ -202,7 +232,7 @@ const Add = () => {
       </div>
 
       <button className="w-28 py-3 mt-4 bg-black text-white" type="submit">
-        Add
+        {id ? "Update" : "Add"}
       </button>
     </form>
   );
